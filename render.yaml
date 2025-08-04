@@ -1,33 +1,14 @@
 services:
   - type: web
-    name: verifact-backend
+    name: verifact
     env: node
     region: oregon
     plan: free
-    buildCommand: cd server && npm install
-    startCommand: cd server && npm start
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
-      - fromGroup: verifact-secrets
-
-  - type: web
-    name: verifact-frontend  
-    env: static
-    region: oregon
-    plan: free
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
-    envVars:
-      - key: VITE_API_URL
-        value: https://verifact-backend.onrender.com
-
-databases:
-  - name: verifact-redis
-    databaseName: verifact
-    user: verifact
-    region: oregon
-    plan: free
