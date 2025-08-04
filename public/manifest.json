@@ -1,0 +1,31 @@
+{
+  "name": "VeriFact - AI Fact Checker",
+  "short_name": "VeriFact",
+  "description": "Real-time AI-powered news fact-checking system",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1976d2",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/verifact-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "16x16",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["news", "education", "productivity"],
+  "screenshots": [
+    {
+      "src": "/verifact-logo.svg",
+      "sizes": "32x32",
+      "type": "image/svg+xml"
+    }
+  ]
+}
