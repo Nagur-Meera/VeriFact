@@ -72,7 +72,7 @@ const RealTimeUpdates = () => {
       }
       
       // In production, use the environment variable or fallback to Render URL
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://verifact.onrender.com';
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://verifact-fiu4.onrender.com';
       console.log('Production mode, using:', apiUrl);
       console.log('Environment VITE_API_URL:', import.meta.env.VITE_API_URL);
       return apiUrl;

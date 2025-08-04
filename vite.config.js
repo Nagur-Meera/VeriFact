@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   define: {
     // Make environment variables available at build time
-    'import.meta.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL || 'https://verifact.onrender.com')
+    'import.meta.env.VITE_API_URL': JSON.stringify(process.env.VITE_API_URL || 'https://verifact-fiu4.onrender.com')
   },
   server: {
     port: 3000,
@@ -24,6 +24,8 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true
-  }
+    sourcemap: true,
+    copyPublicDir: true
+  },
+  publicDir: 'public'
 })

@@ -17,10 +17,10 @@ import factCheckRoutes, { setFactCheckController as setFactCheckRouteController 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configure dotenv to load from parent directory or use Railway variables
+// Configure dotenv to load from parent directory or use Render variables
 if (process.env.NODE_ENV === 'production') {
-  // In production, Railway will provide environment variables
-  console.log('Production mode: using Railway environment variables');
+  // In production, Render will provide environment variables
+  console.log('Production mode: using Render environment variables');
 } else {
   // In development, load from .env file
   dotenv.config({ path: path.join(__dirname, '../.env') });
@@ -42,8 +42,10 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       connectSrc: [
         "'self'", 
-        "https://verifact-production.up.railway.app",
-        "wss://verifact-production.up.railway.app",
+        "https://verifact-fiu4.onrender.com",
+        "wss://verifact-fiu4.onrender.com",
+        "https://verifact.onrender.com",
+        "wss://verifact.onrender.com",
         "ws://localhost:5000",
         "http://localhost:5000"
       ],
@@ -63,7 +65,20 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve static files from dist folder in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../dist')));
+  // Configure static file serving with proper MIME types
+  app.use(express.static(path.join(__dirname, '../dist'), {
+    setHeaders: (res, path) => {
+      if (path.endsWith('.css')) {
+        res.setHeader('Content-Type', 'text/css');
+      }
+      if (path.endsWith('.js')) {
+        res.setHeader('Content-Type', 'application/javascript');
+      }
+      if (path.endsWith('.json')) {
+        res.setHeader('Content-Type', 'application/json');
+      }
+    }
+  }));
 }
 
 // Rate limiting
