@@ -21,7 +21,7 @@ switch ($choice) {
         Write-Host "2. Connect your GitHub repository"
         Write-Host "3. Create a new Web Service"
         Write-Host "4. Use these settings:"
-        Write-Host "   - Build Command: npm install && npm run build"
+        Write-Host "   - Build Command: npm install; npm run build"
         Write-Host "   - Start Command: npm run server"
         Write-Host "   - Environment: Node"
         Write-Host ""
