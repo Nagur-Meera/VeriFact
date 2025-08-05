@@ -17,10 +17,10 @@ import factCheckRoutes, { setFactCheckController as setFactCheckRouteController 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configure dotenv to load from parent directory or use Render variables
+// Configure dotenv to load from parent directory or use Vercel variables
 if (process.env.NODE_ENV === 'production') {
-  // In production, Render will provide environment variables
-  console.log('Production mode: using Render environment variables');
+  // In production, Vercel will provide environment variables
+  console.log('Production mode: using Vercel environment variables');
 } else {
   // In development, load from .env file
   dotenv.config({ path: path.join(__dirname, '../.env') });
@@ -42,10 +42,10 @@ app.use(helmet({
       defaultSrc: ["'self'"],
       connectSrc: [
         "'self'", 
-        "https://verifact-fiu4.onrender.com",
-        "wss://verifact-fiu4.onrender.com",
-        "https://verifact.onrender.com",
-        "wss://verifact.onrender.com",
+        "https://veri-fact-backend.vercel.app",
+        "wss://veri-fact-backend.vercel.app",
+        "https://*.vercel.app",
+        "wss://*.vercel.app",
         "ws://localhost:5000",
         "http://localhost:5000"
       ],
@@ -98,13 +98,18 @@ app.use('/api', limiter);
 // Connect to MongoDB
 connectDB();
 
-// Initialize controllers
-const factCheckController = new FactCheckController(io);
-await factCheckController.initialize();
+// Initialize controllers - wrap in async function for Vercel
+async function initializeServer() {
+  const factCheckController = new FactCheckController(io);
+  await factCheckController.initialize();
 
-// Pass controller to routes
-setNewsController(factCheckController);
-setFactCheckRouteController(factCheckController);
+  // Pass controller to routes
+  setNewsController(factCheckController);
+  setFactCheckRouteController(factCheckController);
+}
+
+// Initialize server
+initializeServer().catch(console.error);
 
 // Routes
 app.use('/api/news', newsRoutes);
@@ -149,9 +154,14 @@ app.use((error, req, res, next) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+// Export for Vercel serverless functions
+export default app;
 
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
-});
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
+  server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV}`);
+  });
+}
