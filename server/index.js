@@ -62,6 +62,7 @@ app.use(cors({
     'https://verifact-frontend.vercel.app',
     'https://verifact-frontend-git-main.vercel.app',
     'https://verifact-frontend-nagur-meera.vercel.app',
+    'https://veri-fact-backend-k2ba3aeng-nagur-meeras-projects.vercel.app',
     /\.vercel\.app$/,
     /\.vercel\.com$/
   ] : ['http://localhost:3000'],
@@ -166,6 +167,11 @@ app.get('/', (req, res) => {
     },
     timestamp: new Date().toISOString()
   });
+});
+
+// Handle favicon.ico requests
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end(); // No content response for favicon
 });
 
 // Serve React app for all non-API routes in production
