@@ -63,6 +63,7 @@ app.use(cors({
     'https://verifact-frontend-git-main.vercel.app',
     'https://verifact-frontend-nagur-meera.vercel.app',
     'https://veri-fact-backend-k2ba3aeng-nagur-meeras-projects.vercel.app',
+    'https://veri-fact-six.vercel.app',
     /\.vercel\.app$/,
     /\.vercel\.com$/
   ] : ['http://localhost:3000'],
