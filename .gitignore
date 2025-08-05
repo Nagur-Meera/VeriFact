@@ -15,8 +15,12 @@ out/
 # Environment variables - NEVER COMMIT THESE!
 .env
 .env.*
+.env.vercel
 railway.env
 *.env
+
+# Vercel
+.vercel
 
 # IDE/Editor files
 .vscode/

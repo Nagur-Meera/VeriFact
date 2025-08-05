@@ -57,7 +57,13 @@ app.use(helmet({
   }
 }));
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? true : ['http://localhost:3000'],
+  origin: process.env.NODE_ENV === 'production' ? [
+    'https://verifact-frontend.vercel.app',
+    'https://verifact-frontend-git-main.vercel.app',
+    'https://verifact-frontend-nagur-meera.vercel.app',
+    /\.vercel\.app$/,
+    'https://verifact-fiu4.onrender.com'
+  ] : ['http://localhost:3000'],
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));

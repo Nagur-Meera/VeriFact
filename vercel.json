@@ -1,0 +1,22 @@
+{
+  "name": "verifact-frontend",
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm ci",
+  "framework": "vite",
+  "env": {
+    "VITE_API_URL": "https://verifact-fiu4.onrender.com"
+  },
+  "build": {
+    "env": {
+      "VITE_API_URL": "https://verifact-fiu4.onrender.com"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
