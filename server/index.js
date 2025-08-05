@@ -62,7 +62,7 @@ app.use(cors({
     'https://verifact-frontend-git-main.vercel.app',
     'https://verifact-frontend-nagur-meera.vercel.app',
     /\.vercel\.app$/,
-    'https://verifact-fiu4.onrender.com'
+    /\.vercel\.com$/
   ] : ['http://localhost:3000'],
   credentials: true
 }));
