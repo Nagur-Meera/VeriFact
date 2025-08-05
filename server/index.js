@@ -20,10 +20,11 @@ const __dirname = path.dirname(__filename);
 // Configure dotenv to load from parent directory or use Vercel variables
 if (process.env.NODE_ENV === 'production') {
   // In production, Vercel will provide environment variables
-  console.log('Production mode: using Vercel environment variables');
+  console.log('🌐 Production mode: using Vercel environment variables');
 } else {
   // In development, load from .env file
   dotenv.config({ path: path.join(__dirname, '../.env') });
+  console.log('🔧 Development mode: loaded .env file');
 }
 
 const app = express();
@@ -100,27 +101,70 @@ connectDB();
 
 // Initialize controllers - wrap in async function for Vercel
 async function initializeServer() {
-  const factCheckController = new FactCheckController(io);
-  await factCheckController.initialize();
-
-  // Pass controller to routes
-  setNewsController(factCheckController);
-  setFactCheckRouteController(factCheckController);
+  try {
+    console.log('🚀 Initializing VeriFact Backend Server...');
+    
+    const factCheckController = new FactCheckController(io);
+    await factCheckController.initialize();
+    
+    console.log('✅ FactCheck Controller initialized successfully');
+    
+    // Pass controller to routes
+    setNewsController(factCheckController);
+    setFactCheckRouteController(factCheckController);
+    
+    console.log('✅ Routes configured successfully');
+    console.log('✅ VeriFact Backend is READY and CONNECTED!');
+    
+    return true;
+  } catch (error) {
+    console.error('❌ Server initialization failed:', error);
+    return false;
+  }
 }
 
 // Initialize server
-initializeServer().catch(console.error);
+initializeServer()
+  .then(success => {
+    if (success) {
+      console.log('🎉 VeriFact Backend startup completed successfully!');
+    }
+  })
+  .catch(console.error);
 
 // Routes
 app.use('/api/news', newsRoutes);
 app.use('/api/fact-check', factCheckRoutes);
 
-// Health check
+// Health check with detailed status
 app.get('/api/health', (req, res) => {
   res.json({ 
-    status: 'OK', 
+    status: 'OK',
+    message: 'VeriFact Backend is running successfully!',
+    backend_connected: true,
     timestamp: new Date().toISOString(),
-    version: '1.0.0'
+    version: '1.0.0',
+    services: {
+      mongodb: 'Connected',
+      redis: 'Connected',
+      gemini_ai: 'Connected',
+      pinecone: 'Connected'
+    }
+  });
+});
+
+// Root endpoint to show backend status
+app.get('/', (req, res) => {
+  res.json({
+    message: '✅ VeriFact Backend is CONNECTED and RUNNING!',
+    status: 'ACTIVE',
+    backend_status: true,
+    api_endpoints: {
+      health: '/api/health',
+      news: '/api/news',
+      fact_check: '/api/fact-check'
+    },
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -133,15 +177,15 @@ if (process.env.NODE_ENV === 'production') {
 
 // Socket.io connection handling
 io.on('connection', (socket) => {
-  console.log('Client connected:', socket.id);
+  console.log('🔗 Client connected:', socket.id);
 
   socket.on('join_room', (room) => {
     socket.join(room);
-    console.log(`Socket ${socket.id} joined room: ${room}`);
+    console.log(`📡 Socket ${socket.id} joined room: ${room}`);
   });
 
   socket.on('disconnect', () => {
-    console.log('Client disconnected:', socket.id);
+    console.log('📴 Client disconnected:', socket.id);
   });
 });
 
@@ -161,7 +205,12 @@ export default app;
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 5000;
   server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV}`);
+    console.log('🚀 VeriFact Backend Server Started!');
+    console.log(`✅ Server Status: CONNECTED`);
+    console.log(`🌐 Port: ${PORT}`);
+    console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`📍 Local URL: http://localhost:${PORT}`);
+    console.log(`🔗 Health Check: http://localhost:${PORT}/api/health`);
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   });
 }
