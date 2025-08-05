@@ -58,7 +58,8 @@ app.use(helmet({
   }
 }));
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? [
+  origin: [
+    'http://localhost:3000',
     'https://verifact-frontend.vercel.app',
     'https://verifact-frontend-git-main.vercel.app',
     'https://verifact-frontend-nagur-meera.vercel.app',
@@ -66,7 +67,7 @@ app.use(cors({
     'https://veri-fact-six.vercel.app',
     /\.vercel\.app$/,
     /\.vercel\.com$/
-  ] : ['http://localhost:3000'],
+  ],
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));

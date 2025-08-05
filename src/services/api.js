@@ -10,8 +10,8 @@ const getApiUrl = () => {
     return 'http://localhost:5000';
   }
   
-  // In production, use the environment variable or fallback to Render URL
-  const apiUrl = import.meta.env.VITE_API_URL || 'https://verifact-fiu4.onrender.com';
+  // In production, use the deployed Vercel backend
+  const apiUrl = import.meta.env.VITE_API_URL || 'https://veri-fact-six.vercel.app';
   console.log('API: Production mode, using:', apiUrl);
   return apiUrl;
 };
