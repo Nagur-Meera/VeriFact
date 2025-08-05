@@ -8,14 +8,19 @@ class RedisService {
 
   async connect() {
     try {
-      // Simplified Redis Cloud connection that works
+      // Enhanced Redis Cloud connection with better stability
       this.client = createClient({
         username: process.env.REDIS_USERNAME || 'default',
         password: process.env.REDIS_PASSWORD,
         socket: {
           host: process.env.REDIS_HOST,
-          port: parseInt(process.env.REDIS_PORT)
-        }
+          port: parseInt(process.env.REDIS_PORT),
+          keepAlive: true,
+          connectTimeout: 10000,
+          lazyConnect: true,
+          reconnectDelay: (retries) => Math.min(retries * 50, 500)
+        },
+        legacyMode: false
       });
 
       this.client.on('error', (err) => {
