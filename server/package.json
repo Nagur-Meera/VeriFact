@@ -4,7 +4,9 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build": "echo 'Server build complete'",
+    "vercel-build": "echo 'Server ready for deployment'"
   },
   "dependencies": {
     "@huggingface/inference": "^4.6.1",
