@@ -1,0 +1,21 @@
+# Railway Services Configuration
+web:
+  build:
+    command: npm run build
+  start:
+    command: npm run preview
+  healthcheck:
+    path: /
+    timeout: 10s
+    interval: 30s
+
+api:
+  build:
+    command: cd server && npm install
+  start:
+    command: cd server && npm start
+  healthcheck:
+    path: /api/health
+    timeout: 10s
+    interval: 30s
+  port: 5000
