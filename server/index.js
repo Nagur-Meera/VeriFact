@@ -31,7 +31,14 @@ const app = express();
 const server = createServer(app);
 const io = new SocketIOServer(server, {
   cors: {
-    origin: process.env.NODE_ENV === 'production' ? true : ['http://localhost:3000'],
+    origin: process.env.NODE_ENV === 'production' ? [
+      'https://verifact-zeta.vercel.app',
+      'https://verifact-frontend.vercel.app',
+      /\.vercel\.app$/
+    ] : [
+      'http://localhost:3000',
+      'http://localhost:3001'
+    ],
     credentials: true
   }
 });
@@ -60,6 +67,8 @@ app.use(helmet({
 app.use(cors({
   origin: [
     'http://localhost:3000',
+    'http://localhost:3001',
+    'https://verifact-zeta.vercel.app',
     'https://verifact-frontend.vercel.app',
     'https://verifact-frontend-git-main.vercel.app',
     'https://verifact-frontend-nagur-meera.vercel.app',
