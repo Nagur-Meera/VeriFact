@@ -17,12 +17,12 @@ import factCheckRoutes, { setFactCheckController as setFactCheckRouteController 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configure dotenv to load from parent directory or use Vercel variables
+// Configure dotenv to load from current directory or use Vercel variables
 if (process.env.NODE_ENV === 'production') {
   // In production, Vercel will provide environment variables
   console.log('🌐 Production mode: using Vercel environment variables');
 } else {
-  // In development, load from .env file
+  // In development, load from .env file in parent directory
   dotenv.config({ path: path.join(__dirname, '../.env') });
   console.log('🔧 Development mode: loaded .env file');
 }
