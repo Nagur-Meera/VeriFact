@@ -32,63 +32,92 @@ import {
   Refresh
 } from '@mui/icons-material';
 import { io } from 'socket.io-client';
+import { healthCheck, getSystemStats } from '../services/api';
 
 const RealTimeUpdates = () => {
   const [updates, setUpdates] = useState([]);
   const [connected, setConnected] = useState(false);
   const [minimized, setMinimized] = useState(false);
 
-  useEffect(() => {
-    // Check if we're in a serverless environment (like Vercel)
-    const isServerless = window.location.hostname.includes('vercel.app') || 
-                        window.location.hostname.includes('netlify.app');
-    
-    if (isServerless) {
-      console.log('Serverless environment detected - WebSocket connections not supported');
-      setConnected(false);
+  // Function to check backend connectivity and fetch initial data
+  const checkBackendConnection = async () => {
+    try {
+      console.log('Checking backend connection...');
+      const healthResponse = await healthCheck();
       
-      // Add a message about limited real-time functionality
-      setUpdates(prev => [...prev, {
+      if (healthResponse.data) {
+        setConnected(true);
+        console.log('Backend connected successfully:', healthResponse.data);
+        
+        // Add a success message
+        setUpdates(prev => [{
+          id: Date.now(),
+          type: 'system',
+          timestamp: new Date().toISOString(),
+          data: {
+            message: `✅ Connected to VeriFact Backend`,
+            type: 'success',
+            details: healthResponse.data.message
+          }
+        }, ...prev.slice(0, 9)]);
+
+        // Try to fetch system stats
+        try {
+          const statsResponse = await getSystemStats();
+          if (statsResponse.data) {
+            setUpdates(prev => [{
+              id: Date.now() + 1,
+              type: 'stats',
+              timestamp: new Date().toISOString(),
+              data: {
+                message: 'System statistics updated',
+                type: 'info',
+                stats: statsResponse.data
+              }
+            }, ...prev.slice(0, 9)]);
+          }
+        } catch (statsError) {
+          console.log('Stats endpoint not available:', statsError.message);
+        }
+      }
+    } catch (error) {
+      console.error('Backend connection failed:', error);
+      setConnected(false);
+      setUpdates(prev => [{
         id: Date.now(),
         type: 'system',
         timestamp: new Date().toISOString(),
         data: {
-          message: 'Real-time updates disabled in serverless deployment',
-          type: 'info'
+          message: `❌ Backend connection failed`,
+          type: 'error',
+          details: error.message
         }
-      }]);
-      
-      return; // Don't try to connect to Socket.IO
+      }, ...prev.slice(0, 9)]);
     }
+  };
 
-    // Determine the correct API URL for Socket.IO connection
+  useEffect(() => {
+    // First, check backend connectivity
+    checkBackendConnection();
+
+    // Then try Socket.IO connection with polling for serverless
     const getSocketUrl = () => {
-      // Check if we're in development mode
-      const isDev = import.meta.env.DEV;
-      
-      if (isDev) {
-        console.log('Development mode detected, using localhost');
-        return 'http://localhost:5000';
-      }
-      
-      // In production, use the deployed Vercel backend
       const apiUrl = import.meta.env.VITE_API_URL || 'https://veri-fact-six.vercel.app';
-      console.log('Production mode, using:', apiUrl);
-      console.log('Environment VITE_API_URL:', import.meta.env.VITE_API_URL);
+      console.log('Socket.IO: Using deployed backend:', apiUrl);
       return apiUrl;
     };
 
     const socketUrl = getSocketUrl();
-    console.log('Connecting to Socket.IO at:', socketUrl);
+    console.log('Attempting Socket.IO connection to:', socketUrl);
     
     const socket = io(socketUrl, {
-      transports: ['websocket', 'polling'],
-      timeout: 10000,
+      transports: ['polling'], // Use only polling for serverless compatibility
+      timeout: 15000,
       forceNew: true,
       autoConnect: true,
       reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 1000
+      reconnectionAttempts: 3,
+      reconnectionDelay: 2000
     });
 
     socket.on('connect', () => {
@@ -223,10 +252,10 @@ const RealTimeUpdates = () => {
                 <Security sx={{ fontSize: 20 }} />
               </Badge>
               
-              <Tooltip title="Clear updates">
+              <Tooltip title="Refresh connection">
                 <IconButton 
                   size="small" 
-                  onClick={clearUpdates}
+                  onClick={checkBackendConnection}
                   sx={{ color: 'white' }}
                 >
                   <Refresh sx={{ fontSize: 18 }} />

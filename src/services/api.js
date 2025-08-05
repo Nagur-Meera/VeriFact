@@ -2,17 +2,9 @@ import axios from 'axios';
 
 // Determine the correct API URL
 const getApiUrl = () => {
-  // Check if we're in development mode
-  const isDev = import.meta.env.DEV;
-  
-  if (isDev) {
-    console.log('API: Development mode detected, using localhost');
-    return 'http://localhost:5000';
-  }
-  
-  // In production, use the deployed Vercel backend
+  // Always use the deployed Vercel backend
   const apiUrl = import.meta.env.VITE_API_URL || 'https://veri-fact-six.vercel.app';
-  console.log('API: Production mode, using:', apiUrl);
+  console.log('API: Using deployed backend:', apiUrl);
   return apiUrl;
 };
 
